@@ -1,14 +1,21 @@
-const express = require('express');
+require("dotenv").config();
+const express = require("express");
 const app = express();
+const cors = require("cors");
+const connection = require("./db");
+const userRoutes = require("./routes/users");
+const authRoutes = require("./routes/auth");
 
-app.get('/', (req, res) => {
-  res.send('Welcome to the home page!');
-});
+// database connection
+connection();
 
-app.get('/api/data', (req, res) => {
-  res.json({ message: "Data retrieved successfully" });
-});
+// middlewares
+app.use(express.json());
+app.use(cors());
 
-app.listen(3000, () => {
-  console.log("Server started on port 3000");
-});
+// routes
+app.use("/api/users", userRoutes);
+app.use("/api/auth", authRoutes);
+
+const port = process.env.PORT || 3000;
+app.listen(port, console.log(`Listening on port ${port}...`));
