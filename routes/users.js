@@ -34,30 +34,50 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// Get user profile
+// Fetch user profile
 router.get("/profile", auth, async (req, res) => {
   try {
-      // Ensure the user ID from token is present
       if (!req.user || !req.user._id) {
           return res.status(401).send({ message: "Unauthorized access" });
       }
 
-      // Fetch user data from database
       const user = await User.findById(req.user._id).select("-password");
       if (!user) {
           return res.status(404).send({ message: "User not found" });
       }
 
-      // Respond with user details
-      res.status(200).send({
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-      });
+      res.status(200).send(user);
   } catch (error) {
       console.error("Error fetching user profile:", error);
       res.status(500).send({ message: "Internal Server Error" });
   }
 });
+
+// Update user profile
+router.put("/profile", auth, async (req, res) => {
+  try {
+      const { firstName, lastName, email } = req.body;
+
+      if (!firstName || !lastName || !email) {
+          return res.status(400).send({ message: "All fields are required" });
+      }
+
+      const user = await User.findByIdAndUpdate(
+          req.user._id,
+          { firstName, lastName, email },
+          { new: true } // Return the updated document
+      ).select("-password");
+
+      if (!user) {
+          return res.status(404).send({ message: "User not found" });
+      }
+
+      res.status(200).send(user);
+  } catch (error) {
+      console.error("Error updating user profile:", error);
+      res.status(500).send({ message: "Internal Server Error" });
+  }
+});
+
 
 module.exports = router;
