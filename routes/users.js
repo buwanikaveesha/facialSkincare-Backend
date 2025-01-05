@@ -127,12 +127,13 @@ router.put("/profile-photo", auth, upload.single("profilePhoto"), async (req, re
 
     res.status(200).send({
       message: "Profile photo updated successfully",
-      profilePhoto: `${req.protocol}://${req.get("host")}${profilePhotoPath}`,
+      profilePhoto: profilePhotoPath, // Return the relative path here
     });
   } catch (error) {
     console.error("Error uploading profile photo:", error);
     res.status(500).send({ message: "Internal Server Error" });
   }
 });
+
 
 module.exports = router;
