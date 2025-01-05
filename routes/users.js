@@ -82,7 +82,7 @@ router.put("/profile", auth, async (req, res) => {
 // Set up storage for Multer
 const uploadDir = path.join(__dirname, "../uploads");
 if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true }); // Ensure the directory exists
+  fs.mkdirSync(uploadDir, { recursive: true });
 }
 
 const storage = multer.diskStorage({
