@@ -5,6 +5,7 @@ const cors = require("cors");
 const connection = require("./db");
 const userRoutes = require("./routes/users");
 const authRoutes = require("./routes/auth");
+const path = require("path");
 
 // database connection
 connection();
@@ -12,6 +13,8 @@ connection();
 // middlewares
 app.use(express.json());
 app.use(cors());
+// Serve static files for uploaded images
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // routes
 app.use("/api/users", userRoutes);
