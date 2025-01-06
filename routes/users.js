@@ -135,6 +135,53 @@ router.put("/profile-photo", auth, upload.single("profilePhoto"), async (req, re
   }
 });
 
+// Route to handle deleting the profile photo
+router.put("/delete-profile-photo", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    if (user.profilePhoto) {
+      // Optionally, delete the file from the server
+      const filePath = path.join(__dirname, "../uploads", user.profilePhoto.split('/').pop());
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error("Error deleting file:", err);
+        }
+      });
+
+      // Remove the profile photo from the database
+      user.profilePhoto = null;
+      await user.save();
+      
+      res.status(200).send({ message: "Profile photo deleted successfully" });
+    } else {
+      res.status(400).send({ message: "No profile photo to delete" });
+    }
+  } catch (error) {
+    console.error("Error deleting profile photo:", error);
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+});
+
+// Route to delete user account
+router.delete('/delete-account', auth, async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.user._id); // Delete the user by their ID from the token
+
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    res.send('User account deleted successfully');
+  } catch (err) {
+    console.error('Error deleting user:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
 
 module.exports = router;
