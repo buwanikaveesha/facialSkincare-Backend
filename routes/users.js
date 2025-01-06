@@ -110,30 +110,31 @@ const upload = multer({ storage, fileFilter });
 // Route to handle profile photo upload
 router.put("/profile-photo", auth, upload.single("profilePhoto"), async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).send({ message: "No file uploaded" });
-    }
+      if (!req.file) {
+          return res.status(400).send({ message: "No file uploaded" });
+      }
 
-    const profilePhotoPath = `/uploads/${req.file.filename}`;
-    const user = await User.findByIdAndUpdate(
-      req.user._id,
-      { profilePhoto: profilePhotoPath },
-      { new: true }
-    ).select("-password");
+      const profilePhotoPath = `/uploads/${req.file.filename}`;
+      const user = await User.findByIdAndUpdate(
+          req.user._id,
+          { profilePhoto: profilePhotoPath },
+          { new: true }
+      ).select("-password");
 
-    if (!user) {
-      return res.status(404).send({ message: "User not found" });
-    }
+      if (!user) {
+          return res.status(404).send({ message: "User not found" });
+      }
 
-    res.status(200).send({
-      message: "Profile photo updated successfully",
-      profilePhoto: profilePhotoPath, // Return the relative path here
-    });
+      res.status(200).send({
+          message: "Profile photo updated successfully",
+          profilePhoto: profilePhotoPath,
+      });
   } catch (error) {
-    console.error("Error uploading profile photo:", error);
-    res.status(500).send({ message: "Internal Server Error" });
+      console.error("Error uploading profile photo:", error);
+      res.status(500).send({ message: "Internal Server Error" });
   }
 });
+
 
 
 module.exports = router;
