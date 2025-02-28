@@ -5,27 +5,31 @@ const Joi = require("joi");
 
 router.post("/", async (req, res) => {
   try {
+    // Validate incoming data
     const { error } = validate(req.body);
     if (error) {
       return res.status(400).send({ message: error.details[0].message });
     }
 
+    // Find the user in the database
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
       return res.status(401).send({ message: "Invalid Email or Password" });
     }
 
+
+    // Check if the password is valid
     const validPassword = await bcrypt.compare(req.body.password, user.password);
     if (!validPassword) {
       return res.status(401).send({ message: "Invalid Email or Password" });
     }
 
+    // Generate token using the generateAuthToken method
     const token = user.generateAuthToken();
 
-    // Log the successful login for debugging purposes
-    console.log("User logged in:", user.email);
+    // Send the token back to the frontend
+    res.status(200).send({ token });
 
-    res.status(200).send({ data: token, message: "Logged in successfully" });
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).send({ message: "Internal Server Error" });
