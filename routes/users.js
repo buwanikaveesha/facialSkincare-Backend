@@ -55,30 +55,30 @@ router.get("/profile", auth, async (req, res) => {
 });
 
 // Update user profile
-router.put("/profile", auth, async (req, res) => {
-  try {
-    const { firstName, lastName, email } = req.body;
+// router.put("/profile", auth, async (req, res) => {
+//   try {
+//     const { firstName, lastName, email } = req.body;
 
-    if (!firstName || !lastName || !email) {
-      return res.status(400).send({ message: "All fields are required" });
-    }
+//     if (!firstName || !lastName || !email) {
+//       return res.status(400).send({ message: "All fields are required" });
+//     }
 
-    const user = await User.findByIdAndUpdate(
-      req.user._id,
-      { firstName, lastName, email },
-      { new: true }
-    ).select("-password");
+//     const user = await User.findByIdAndUpdate(
+//       req.user._id,
+//       { firstName, lastName, email },
+//       { new: true }
+//     ).select("-password");
 
-    if (!user) {
-      return res.status(404).send({ message: "User not found" });
-    }
+//     if (!user) {
+//       return res.status(404).send({ message: "User not found" });
+//     }
 
-    res.status(200).send(user);
-  } catch (error) {
-    console.error("Error updating user profile:", error);
-    res.status(500).send({ message: "Internal Server Error" });
-  }
-});
+//     res.status(200).send(user);
+//   } catch (error) {
+//     console.error("Error updating user profile:", error);
+//     res.status(500).send({ message: "Internal Server Error" });
+//   }
+// });
 
 // Set up storage for Multer
 const uploadDir = path.join(__dirname, "../uploads");
@@ -108,65 +108,65 @@ const fileFilter = (req, file, cb) => {
 // Multer middleware
 const upload = multer({ storage, fileFilter });
 
-// Route to handle profile photo upload
-router.put("/profile-photo", auth, upload.single("profilePhoto"), async (req, res) => {
-  try {
-      if (!req.file) {
-          return res.status(400).send({ message: "No file uploaded" });
-      }
+// // Route to handle profile photo upload
+// router.put("/profile-photo", auth, upload.single("profilePhoto"), async (req, res) => {
+//   try {
+//       if (!req.file) {
+//           return res.status(400).send({ message: "No file uploaded" });
+//       }
 
-      const profilePhotoPath = `/uploads/${req.file.filename}`;
-      const user = await User.findByIdAndUpdate(
-          req.user._id,
-          { profilePhoto: profilePhotoPath },
-          { new: true }
-      ).select("-password");
+//       const profilePhotoPath = `/uploads/${req.file.filename}`;
+//       const user = await User.findByIdAndUpdate(
+//           req.user._id,
+//           { profilePhoto: profilePhotoPath },
+//           { new: true }
+//       ).select("-password");
 
-      if (!user) {
-          return res.status(404).send({ message: "User not found" });
-      }
+//       if (!user) {
+//           return res.status(404).send({ message: "User not found" });
+//       }
 
-      res.status(200).send({
-          message: "Profile photo updated successfully",
-          profilePhoto: profilePhotoPath,
-      });
-  } catch (error) {
-      console.error("Error uploading profile photo:", error);
-      res.status(500).send({ message: "Internal Server Error" });
-  }
-});
+//       res.status(200).send({
+//           message: "Profile photo updated successfully",
+//           profilePhoto: profilePhotoPath,
+//       });
+//   } catch (error) {
+//       console.error("Error uploading profile photo:", error);
+//       res.status(500).send({ message: "Internal Server Error" });
+//   }
+// });
 
 // Route to handle deleting the profile photo
-router.put("/delete-profile-photo", auth, async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id);
+// router.put("/delete-profile-photo", auth, async (req, res) => {
+//   try {
+//     const user = await User.findById(req.user._id);
 
-    if (!user) {
-      return res.status(404).send({ message: "User not found" });
-    }
+//     if (!user) {
+//       return res.status(404).send({ message: "User not found" });
+//     }
 
-    if (user.profilePhoto) {
-      // Optionally, delete the file from the server
-      const filePath = path.join(__dirname, "../uploads", user.profilePhoto.split('/').pop());
-      fs.unlink(filePath, (err) => {
-        if (err) {
-          console.error("Error deleting file:", err);
-        }
-      });
+//     if (user.profilePhoto) {
+//       // Optionally, delete the file from the server
+//       const filePath = path.join(__dirname, "../uploads", user.profilePhoto.split('/').pop());
+//       fs.unlink(filePath, (err) => {
+//         if (err) {
+//           console.error("Error deleting file:", err);
+//         }
+//       });
 
       // Remove the profile photo from the database
-      user.profilePhoto = null;
-      await user.save();
+//       user.profilePhoto = null;
+//       await user.save();
       
-      res.status(200).send({ message: "Profile photo deleted successfully" });
-    } else {
-      res.status(400).send({ message: "No profile photo to delete" });
-    }
-  } catch (error) {
-    console.error("Error deleting profile photo:", error);
-    res.status(500).send({ message: "Internal Server Error" });
-  }
-});
+//       res.status(200).send({ message: "Profile photo deleted successfully" });
+//     } else {
+//       res.status(400).send({ message: "No profile photo to delete" });
+//     }
+//   } catch (error) {
+//     console.error("Error deleting profile photo:", error);
+//     res.status(500).send({ message: "Internal Server Error" });
+//   }
+// });
 
 // Route to delete user account
 router.delete('/delete-account', auth, async (req, res) => {
