@@ -35,10 +35,11 @@ userSchema.methods.generateAuthToken = function () {
   const token = jwt.sign(
     { _id: this._id, email: this.email },
     process.env.JWTPRIVATEKEY,
-    { expiresIn: "1d" }
+    { expiresIn: '7d' }
   );
   return token;
 };
+
 
 const User = mongoose.model("user", userSchema);
 
