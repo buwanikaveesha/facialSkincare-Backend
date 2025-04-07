@@ -10,7 +10,11 @@ import userRoutes from './routes/users.js';
 const app = express();
 const PORT = 3000;
 
-app.use(cors({ origin: "*" }));
+app.use(cors({
+  origin: "https://facial-skincare-frontend.vercel.app",
+  credentials: true
+}));
+
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
