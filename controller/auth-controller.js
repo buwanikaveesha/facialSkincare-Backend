@@ -5,7 +5,7 @@ import passwordComplexity from "joi-password-complexity";
 import User from "../schema/User.js";
 
 const createToken = (user) => {
-  return jwt.sign({ _id: user._id, email: user.email }, process.env.JWT_PRIVATE_KEY, { expiresIn: "7d" });
+  return jwt.sign({ _id: user._id, email: user.email }, process.env.MY_SECRET_ACCESS_KEY, { expiresIn: "7d" });
 };
 
 
