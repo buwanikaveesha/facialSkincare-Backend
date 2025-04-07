@@ -1,31 +1,24 @@
-require("dotenv").config();
-const express = require("express");
+import express from "express";
+import "dotenv/config";
+import cors from "cors";
+import DBConnection from "./config/dbConnection.js";
+import authRoutes from './routes/auth.js';
+import userRoutes from './routes/users.js';
+import resultRoutes from './routes/result.js';
+import feedbackRoutes from './routes/feedback.js';
+
 const app = express();
-const cors = require("cors");
-const connection = require("./db");
-const userRoutes = require("./routes/users");
-const authRoutes = require("./routes/auth");
-const path = require("path");
-const feedbackRoutes = require('./routes/feedback');
-const resultRoutes = require("./routes/result");
+const PORT = 3000;
 
-console.log("JWT Secret Key:", process.env.JWTPRIVATEKEY);
-
-// Database connection
-connection();
-
-// Middlewares
-app.use(express.json());
 app.use(cors());
-// Serve static files for uploaded images
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(express.json());
 
-// Routes
-app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/result", resultRoutes);
 app.use("/api/feedback", feedbackRoutes);
 
-// Use the result routes
-app.use("/api/results", resultRoutes);
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Listening on port ${port}...`));
+app.listen(PORT, () => {
+  DBConnection();
+  console.log(`Server is running on port ${PORT}`);
+});

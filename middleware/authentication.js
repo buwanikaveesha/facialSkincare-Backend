@@ -1,11 +1,11 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 
-const auth = (req, res, next) => {
+const authToken = (req, res, next) => {
     try {
         const token = req.header("Authorization")?.split(" ")[1];
         if (!token) return res.status(403).send({ message: "Access Denied" });
 
-        const decoded = jwt.verify(token, process.env.JWTPRIVATEKEY); // Verify the token with the secret key
+        const decoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
         req.user = decoded;
 
         next();
@@ -15,4 +15,4 @@ const auth = (req, res, next) => {
     }
 };
 
-module.exports = auth;
+export default authToken;
