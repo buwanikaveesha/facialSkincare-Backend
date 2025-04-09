@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 const corsOptions = {
   origin: 'https://facial-skincare-frontend.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with'],
   credentials: true,
 };
 
@@ -22,6 +22,7 @@ app.options('*', cors(corsOptions));
 
 app.use(express.json());
 
+// Routes
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/result", resultRoutes);
