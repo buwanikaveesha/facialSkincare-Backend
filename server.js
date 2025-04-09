@@ -31,6 +31,14 @@ app.use("/user", userRoutes);
 app.use("/result", resultRoutes);
 app.use("/feedback", feedbackRoutes);
 
+// Handle manual CORS headers (for added guarantee)
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://facial-skincare-frontend.vercel.app');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
+
 // Start server
 app.listen(PORT, () => {
   DBConnection();
