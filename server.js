@@ -22,10 +22,10 @@ app.options('*', cors(corsOptions));
 
 app.use(express.json());
 
-app.use("/api/auth", authRoutes);
-app.use("/api/user", userRoutes);
-app.use("/api/result", resultRoutes);
-app.use("/api/feedback", feedbackRoutes);
+app.use("/auth", authRoutes);
+app.use("/user", userRoutes);
+app.use("/result", resultRoutes);
+app.use("/feedback", feedbackRoutes);
 
 app.listen(PORT, () => {
   DBConnection();
