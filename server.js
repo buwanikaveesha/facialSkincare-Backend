@@ -8,38 +8,26 @@ import resultRoutes from './routes/result.js';
 import userRoutes from './routes/users.js';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
-// Define CORS options
-const corsOptions = {
-  origin: 'https://facial-skincare-frontend.vercel.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-};
-
-// Use CORS middleware
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
-
-// Middleware
+// app.use(cors({ origin: "*" }));
+// app.use(function (req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Methods", "GET, PUT, POST");
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept"
+//   );
+//   next();
+// });
+app.use(cors());
 app.use(express.json());
 
-// Routes
-app.use("/auth", authRoutes);
-app.use("/user", userRoutes);
-app.use("/result", resultRoutes);
-app.use("/feedback", feedbackRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/result", resultRoutes);
+app.use("/api/feedback", feedbackRoutes);
 
-// Handle manual CORS headers (for added guarantee)
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://facial-skincare-frontend.vercel.app');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  next();
-});
-
-// Start server
 app.listen(PORT, () => {
   DBConnection();
   console.log(`Server is running on port ${PORT}`);
