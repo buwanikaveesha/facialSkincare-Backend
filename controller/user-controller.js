@@ -1,4 +1,5 @@
 import User from "../schema/User.js";
+import Result from "../schema/Result.js";
 
 export const GetProfile = async (req, res) => {
   const { id } = req.params;
@@ -68,14 +69,23 @@ export const DeleteProfile = async (req, res) => {
       return res.status(401).send({ message: "Unauthorized access" });
     }
 
-    const user = await User.findById(req.user._id);
+    const userId = req.user._id;
+
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).send({ message: "User not found" });
     }
 
-    await User.findByIdAndDelete(req.user._id);
+    // Delete associated results
+    await Result.deleteMany({ userEmail: user.email });
 
-    res.status(200).send({ message: "User profile deleted successfully" });
+    // Delete associated feedbacks
+    // await Feedback.deleteMany({ userId });
+
+    // Finally delete the user
+    await User.findByIdAndDelete(userId);
+
+    res.status(200).send({ message: "User profile and related data deleted successfully" });
   } catch (error) {
     console.error("Error deleting user profile:", error);
     res.status(500).send({ message: "Internal Server Error" });
